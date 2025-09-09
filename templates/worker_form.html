@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Worker Details Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  
+    <style>
+        .submit-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Worker Details Form</h2>
+    
+    <form action="/worker_form" method="post" class="w-50 mx-auto" action="worker_home.html" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="name" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="phone" class="form-label">Phone Number</label>
+            <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter phone number" required pattern="\d{10}" title="Enter exactly 10 digits" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
+        </div>
+        <div class="mb-3">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" class="form-control" id="location" name="location" placeholder="Enter your name" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="photo" class="form-label">Upload Photo</label>
+            <input type="file" class="form-control" id="photo" name="photo" accept="image/*" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Skills</label>
+            <select class="form-control" name="skills" id="skills" multiple required>
+                <option value="Water">Water</option>
+                <option value="Electrician">Electrician</option>
+                <option value="Mistri">Mistri</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="text" class="form-label">Price</label>
+            <input type="text" class="form-control" id="rate" name="rate"  required>
+        </div>
+        <div class="mb-3">
+            <label for="text" class="form-label">Availability</label>
+            <input type="text" class="form-control" id="availability" name="availability"  required>
+        </div>
+
+        
+        <button  type="submit" class="btn btn-primary submit-btn">Submit</button>
+    </form>
+    
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script>
+    const choices = new Choices('#skills', {
+        removeItemButton: true
+    });
+function validateForm() {
+    const phone = document.getElementById('phone').value.trim();
+    const email = document.getElementById('email').value.trim();
+
+    // Check phone exactly 10 digits
+    if (!/^\d{10}$/.test(phone)) {
+        alert("Phone number must be exactly 10 digits.");
+        return false;
+    }
+
+    // Basic email format check
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+        alert("Please enter a valid email address.");
+        return false;
+    }
+
+    return true; // all validations passed
+}
+</script>
+
+</body>
+</html>

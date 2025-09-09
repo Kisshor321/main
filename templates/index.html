@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Experts</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* ---------------------------------------------------- */
+        /* --- General & Global Styling --- */
+        /* ---------------------------------------------------- */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Prevents scrollbars on page transitions */
+        }
+        
+        .page {
+            display: none; /* All pages are hidden by default */
+            position: absolute; /* Positioned on top of each other */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            z-index: 1;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: opacity 0.5s ease-in-out; /* Smooth fade effect */
+            opacity: 0;
+        }
+
+        .page.active {
+            display: flex;
+            opacity: 1; /* Fade in the active page */
+            z-index: 2; /* Bring active page to the front */
+        }
+        
+        /* ---------------------------------------------------- */
+        /* --- Page Backgrounds (Full Window) --- */
+        /* ---------------------------------------------------- */
+        #home-page {
+            background-image: url('https://placehold.co/1920x1080/4267B2/FFFFFF?text=Home+Page'); /* Replace with your image URL */
+            color: #fff;
+        }
+
+        #customer-page {
+            background-image: url('https://placehold.co/1920x1080/DB4437/FFFFFF?text=Customer+Login'); /* Replace with your image URL */
+        }
+
+        #worker-page {
+            background-image: url('https://placehold.co/1920x1080/4CAF50/FFFFFF?text=Worker+Login'); /* Replace with your image URL */
+        }
+
+        #signup-page {
+            background-image: url('https://placehold.co/1920x1080/6c757d/FFFFFF?text=Sign+Up+Page'); /* Replace with your image URL */
+        }
+
+        .landing-page-container {
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px;
+            box-sizing: border-box;
+            color: #fff;
+        }
+        
+        /* The existing .customer_style is now the login card */
+        .login-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 90%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            color: #333;
+        }
+        
+        /* ---------------------------------------------------- */
+        /* --- Re-usable Components & Layout --- */
+        /* ---------------------------------------------------- */
+        .header { width: 100%; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; }
+        h1 { font-size: 2.5rem; font-weight: 700; line-height: 1.2; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); }
+        .button-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+        .btn-customer { background-color: #3b5998; color: #fff; }
+        .btn-worker { background-color: #4CAF50; color: #fff; }
+        .icon { margin-right: 10px; }
+        .footer { width: 100%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; color: #fff; }
+        .footer-links a { color: #fff; text-decoration: none; margin-right: 20px; font-size: 0.9rem; }
+        .social-media a { color: #fff; text-decoration: none; font-size: 1.2rem; margin-left: 15px; }
+
+        /* ---------------------------------------------------- */
+        /* --- Form Styling (Updated to .login-card) --- */
+        /* ---------------------------------------------------- */
+        .login-card h2 { font-size: 2rem; font-weight: 700; margin-bottom: 5px; }
+        .login-card p { color: #6c757d; font-size: 0.9rem; margin-bottom: 30px; }
+        .login-card p a { color: #3b5998; text-decoration: none; font-weight: bold; }
+        .login-card form { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        
+        .form-group-with-icon { position: relative; width: 100%; max-width: 300px; }
+        .form-group-with-icon input, .form-group-with-icon select {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #333;
+            outline: none;
+            transition: border-color 0.3s;
+            text-align: left;
+        }
+        .form-group-with-icon input:focus, .form-group-with-icon select:focus { border-color: #007bff; }
+        .form-group-with-icon .icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #adb5bd; font-size: 1rem; }
+        
+        .login-btn { background-color: #3b5998; border-color: #3b5998; border-radius: 50px; padding: 12px 30px; font-size: 1rem; font-weight: bold; width: 100%; max-width: 200px; display: flex; align-items: center; justify-content: center; gap: 8px; color: #fff; cursor: pointer; transition: background-color 0.3s; margin-top: 20px; margin-bottom: 20px; }
+        .login-btn:hover { background-color: #2e4d8a; }
+
+        .forgot-password-or { display: flex; align-items: center; justify-content: center; width: 100%; max-width: 300px; margin: 20px 0; font-size: 0.9rem; color: #6c757d; }
+        .forgot-password-or a { color: #007bff; text-decoration: none; margin-right: auto; }
+        .forgot-password-or .or-text { padding: 0 10px; font-weight: bold; }
+
+        .social-login-buttons { display: flex; flex-direction: column; width: 100%; max-width: 300px; gap: 15px; }
+        .social-btn { display: flex; align-items: center; justify-content: center; padding: 12px; border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 0.9rem; color: #fff; transition: background-color 0.3s; }
+        .google-btn { background-color: #db4437; }
+        .facebook-btn { background-color: #4267B2; }
+    </style>
+</head>
+<body>
+    
+    <div id="home-page" class="page active">
+        <div class="landing-page-container">
+            <header class="header">
+                <div class="logo">
+                    <span class="logo-icon">🛠️</span>
+                    <span class="logo-text">LOCAL EXPERTS</span>
+                </div>
+            </header>
+            <main class="main-content">
+                <h1>Connecting You with<br>Local Experts</h1>
+                <div class="button-container">
+                    <a href="#customer" onclick="showPage('customer-page')" class="btn btn-customer">
+                        <span class="icon">🛒</span> I'm a Customer
+                    </a>
+                    <a href="#worker" onclick="showPage('worker-page')" class="btn btn-worker">
+                        <span class="icon">👷</span> I'm a Worker
+                    </a>
+                </div>
+            </main>
+            <footer class="footer">
+                <div class="footer-links">
+                    <a href="mailto:uyyalakishore33@gmail.com">Help</a>
+                    <a href="#">About Us</a>
+                </div>
+                <div class="social-media">
+                    <a href="https://www.facebook.com/reddy.kishore.5055"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/kishorereddyuyyala/"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.youtube.com/"><i class="fab fa-youtube"></i></a>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <div id="customer-page" class="page">
+        <div class="login-card">
+            <h2>Customer Login</h2>
+            <p>Don't have an account? <a href="#signup" onclick="showPage('signup-page')">Sign Up</a></p>
+            <form action="/login" method="POST" class="login-form">
+                <input type="hidden" name="role" value="customer">
+                <div class="form-group-with-icon">
+                    <input type="email" name="email" placeholder="Email" required>
+                    <i class="fas fa-envelope icon"></i>
+                </div>
+                <div class="form-group-with-icon">
+                    <input type="password" name="password" placeholder="Password" required>
+                    <i class="fas fa-lock icon"></i>
+                </div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-shopping-cart"></i> Login
+                </button>
+            </form>
+            <div class="forgot-password-or">
+                <a href="#">Forgot Password?</a>
+                <span class="or-text">OR</span>
+            </div>
+            <div class="social-login-buttons">
+                <a href="#" class="social-btn google-btn"><i class="fab fa-google"></i> Continue with Google</a>
+                <a href="#" class="social-btn facebook-btn"><i class="fab fa-facebook-f"></i> Continue with Facebook</a>
+            </div>
+            <a href="#home" class="btn btn-link mt-3" onclick="showPage('home-page')">Back</a>
+        </div>
+    </div>
+
+    <div id="worker-page" class="page">
+        <div class="login-card">
+            <h2>Worker Login</h2>
+            <p>Don't have an account? <a href="#signup" onclick="showPage('signup-page')">Sign Up</a></p>
+            <form action="/login" method="POST" class="login-form">
+                <input type="hidden" name="role" value="worker">
+                <div class="form-group-with-icon">
+                    <input type="email" name="email" placeholder="Email" required>
+                    <i class="fas fa-envelope icon"></i>
+                </div>
+                <div class="form-group-with-icon">
+                    <input type="password" name="password" placeholder="Password" required>
+                    <i class="fas fa-lock icon"></i>
+                </div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-user-gear"></i> Login
+                </button>
+            </form>
+            <div class="forgot-password-or">
+                <a href="#">Forgot Password?</a>
+                <span class="or-text">OR</span>
+            </div>
+            <div class="social-login-buttons">
+                <a href="#" class="social-btn google-btn"><i class="fab fa-google"></i> Continue with Google</a>
+                <a href="#" class="social-btn facebook-btn"><i class="fab fa-facebook-f"></i> Continue with Facebook</a>
+            </div>
+            <a href="#home" class="btn btn-link mt-3" onclick="showPage('home-page')">Back</a>
+        </div>
+    </div>
+
+    <div id="signup-page" class="page">
+        <div class="login-card">
+            <h2>Sign Up</h2>
+            <form action="/signup" method="POST" class="login-form">
+                <div class="form-group-with-icon">
+                    <input type="text" name="fullname" placeholder="Full Name" required>
+                    <i class="fas fa-user icon"></i>
+                </div>
+                <div class="form-group-with-icon">
+                    <input type="email" name="email" placeholder="Email" required>
+                    <i class="fas fa-envelope icon"></i>
+                </div>
+                <div class="form-group-with-icon">
+                    <input type="password" name="password" placeholder="Password" required>
+                    <i class="fas fa-lock icon"></i>
+                </div>
+                <div class="form-group-with-icon">
+                    <select name="role" class="form-control" required style="padding-left: 40px;">
+                        <option value="">-- Select Role --</option>
+                        <option value="customer">Customer</option>
+                        <option value="worker">Worker</option>
+                    </select>
+                    <i class="fas fa-user-tag icon"></i>
+                </div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-user-plus"></i> Sign Up
+                </button>
+            </form>
+            <a href="#home" class="btn btn-link mt-3" onclick="showPage('home-page')">Back</a>
+        </div>
+    </div>
+    
+    <script>
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+    </script>
+</body>
+</html>
