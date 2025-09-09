@@ -8,7 +8,7 @@
     <style>
         body { background-color: #f0f2f5; font-family: 'Roboto', sans-serif; color: #333; }
         .navbar-brand { font-family: 'Poppins', sans-serif; font-weight: 600; color: #2c3e50 !important; }
-        .custom-navbar { background-color: #ffffff; padding: 15px 0; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); }
+        .custom-navbar { background-color: #ffffff; padding: 15px 0; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); border-radius:10px}
         .search-filter-form {
             background-color: #ffffff;
             border-radius: 10px;
@@ -73,6 +73,7 @@
             min-width: 120px;
         }
         .profile-icon{width:20px;height:20px}
+        .bg-light{padding:10px}
     </style>
 </head>
 <body class="bg-light">
@@ -81,7 +82,7 @@
 
 
 <nav class="navbar navbar-expand-lg custom-navbar">
-    <div class="container">
+    <div class="container-fuild">
         <a class="navbar-brand" href="{{ url_for('dashboard') }}">
             
             LOCAL EXPERTS
@@ -111,7 +112,7 @@
     </div>
 </nav>
 
-<div class="container mt-4">
+<div class="container-fuild mt-4">
     <form action="{{ url_for('dashboard') }}" method="GET" class="search-filter-form">
         
         <div class="btn-group">
