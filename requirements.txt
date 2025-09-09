@@ -28,10 +28,13 @@ rq==1.15.1
 requests==2.31.0
 python-dotenv==1.0.1     # env file support
 geopy==2.4.1             # location/distance calc
-pydantic==2.6.1          # data validation
-
+pydantic==1.10.14
+        # data validation
+cryptography==41.0.7
 # Testing
 pytest==8.0.2
 
 # Deployment (optional if using gunicorn + Docker)
 gunicorn==21.2.0
+
+
